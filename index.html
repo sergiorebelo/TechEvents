@@ -82,8 +82,8 @@
     const savedMode = localStorage.getItem('mode');
     if (savedMode === 'dark') {
       body.classList.add('dark-mode');
-      toggle.textContent = 'Light Mode';
     }
+    toggle.textContent = body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
     toggle.addEventListener('click', () => {
       body.classList.toggle('dark-mode');
       localStorage.setItem('mode', body.classList.contains('dark-mode') ? 'dark' : 'light');
