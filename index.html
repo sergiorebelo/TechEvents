@@ -117,8 +117,8 @@
       if (m) {
         // constrói Date(year, monthIndex)
         const date = new Date(m[1], m[2] - 1);
-        // formata para "mês de ano" em pt-PT
-        return date.toLocaleDateString('pt-PT', { month: 'long', year: 'numeric' });
+        // format to "month year" in English
+        return date.toLocaleDateString('en', { month: 'long', year: 'numeric' });
       }
     
       // 3) fallback: devolve o original
