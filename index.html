@@ -187,9 +187,10 @@
       // Location
       const loc = document.getElementById('filter-location');
       loc.innerHTML = '<option value="">Location</option>';
-      [...new Set(events.map(e => e.pais))].forEach(country => {
+      [...new Set(events.map(e => e.pais))].sort((a, b) => a.localeCompare(b)).forEach(country => {
         const group = document.createElement('optgroup'); group.label = country;
-        const cities = [...new Set(events.filter(e => e.pais === country).map(e => e.cidade))];
+        const cities = [...new Set(events.filter(e => e.pais === country).map(e => e.cidade))]
+          .sort((a, b) => a.localeCompare(b));
         const optAll = document.createElement('option'); optAll.value = `${country}||`; optAll.textContent = `All ${country}`;
         group.appendChild(optAll);
         cities.forEach(city => {
