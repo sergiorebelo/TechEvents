@@ -60,6 +60,7 @@
     .filters { display: flex; gap: 8px; margin-bottom: 24px; align-items: center; }
     .search-bar { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--input-bg); color: var(--text); }
     .filters select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 999px; background: var(--input-bg); color: var(--text); }
+    .filters input[type=range] { width: 150px; }
     .filters label { display: flex; align-items: center; gap: 4px; }
     .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 8px var(--card-shadow); margin-bottom: 16px; }
     .card-content { padding: 16px; }
@@ -81,7 +82,10 @@
     <div class="filters">
       <input type="text" class="search-bar" id="search" placeholder="Search events" />
       <select id="filter-location"><option value="">Location</option></select>
-      <select id="filter-price"><option value="">Price</option></select>
+      <label style="display:flex;align-items:center;gap:4px;font-size:0.9em;">
+        <span id="price-label">Price</span>
+        <input type="range" id="filter-price" />
+      </label>
       <select id="filter-date"><option value="">Date</option></select>
       <label style="display:flex;align-items:center;gap:4px;font-size:0.9em;">
         <input type="checkbox" id="filter-past" checked /> Hide past events
@@ -227,25 +231,33 @@
       const dateSel = document.getElementById('filter-date');
       dateSel.innerHTML = '<option value="">Date</option>' +
         [...new Set(events.map(e => formatMonthYear(e.data_inicio)))].map(d => `<option value="${d}">${d}</option>`).join('');
-      // Price
+      // Price slider
       const priceSel = document.getElementById('filter-price');
+      const priceLabel = document.getElementById('price-label');
       const prices = events.map(e => e.preco).filter(p => p!=null).sort((a,b)=>a-b);
-      let opts = '<option value="">Price</option>';
       if (prices.length) {
-        const min = prices[0], max = prices[prices.length-1], step = Math.ceil((max-min)/3);
-        for (let i=0;i<3;i++){
-          const s = min + i*step;
-          const e = i<2?min+(i+1)*step:max;
-          opts += `<option value="${s}-${e}">${e===max?`>= €${s}`:`€${s}–€${e}`}</option>`;
-        }
+        priceSel.min = prices[0];
+        priceSel.max = prices[prices.length-1];
+        priceSel.step = 1;
+        priceSel.value = priceSel.max;
+        priceLabel.textContent = 'Any price';
+      } else {
+        priceSel.min = 0;
+        priceSel.max = 0;
+        priceSel.value = 0;
+        priceSel.disabled = true;
+        priceLabel.textContent = 'No price data';
       }
-      priceSel.innerHTML = opts;
     }
 
     function applyFilters() {
       const term = document.getElementById('search').value.toLowerCase();
       const locVal = document.getElementById('filter-location').value;
-      const priceVal = document.getElementById('filter-price').value;
+      const priceInput = document.getElementById('filter-price');
+      const maxPrice = parseFloat(priceInput.value);
+      const priceMax = parseFloat(priceInput.max);
+      const priceLabel = document.getElementById('price-label');
+      priceLabel.textContent = maxPrice >= priceMax ? 'Any price' : `≤ €${maxPrice}`;
       const dateVal = document.getElementById('filter-date').value;
       const hidePast = document.getElementById('filter-past').checked;
       const today = new Date();
@@ -257,9 +269,8 @@
           const [c, city] = locVal.split('||');
           if (city ? e.cidade !== city : e.pais !== c) return false;
         }
-        if (priceVal) {
-          const [min,max] = priceVal.split('-').map(Number);
-          if (e.preco==null||e.preco<min||e.preco>max) return false;
+        if (maxPrice < priceMax) {
+          if (e.preco==null || e.preco>maxPrice) return false;
         }
         if (dateVal && formatMonthYear(e.data_inicio)!==dateVal) return false;
         if (hidePast && parseStartDate(e.data_inicio) < today) return false;
@@ -280,7 +291,8 @@
       });
     }
 
-    ['search','filter-location','filter-price','filter-date','filter-past'].forEach(id=>document.getElementById(id).addEventListener(id==='search'?'input':'change',applyFilters));
+    ['search','filter-location','filter-date','filter-past'].forEach(id=>document.getElementById(id).addEventListener(id==='search'?'input':'change',applyFilters));
+    document.getElementById('filter-price').addEventListener('input', applyFilters);
     fetchEvents();
   </script>
 </body>
