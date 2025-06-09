@@ -49,6 +49,7 @@
     .filters { display: flex; gap: 8px; margin-bottom: 24px; align-items: center; }
     .search-bar { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--input-bg); color: var(--text); }
     .filters select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 999px; background: var(--input-bg); color: var(--text); }
+    .filters label { display: flex; align-items: center; gap: 4px; }
     .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 8px var(--card-shadow); margin-bottom: 16px; }
     .card-content { padding: 16px; }
     .card-content h3 { font-size: 1.2em; margin-bottom: 8px; }
@@ -71,6 +72,9 @@
       <select id="filter-location"><option value="">Location</option></select>
       <select id="filter-price"><option value="">Price</option></select>
       <select id="filter-date"><option value="">Date</option></select>
+      <label style="display:flex;align-items:center;gap:4px;font-size:0.9em;">
+        <input type="checkbox" id="filter-past" checked /> Hide past events
+      </label>
     </div>
     <div id="events-list"></div>
   </div>
@@ -222,6 +226,9 @@
       const locVal = document.getElementById('filter-location').value;
       const priceVal = document.getElementById('filter-price').value;
       const dateVal = document.getElementById('filter-date').value;
+      const hidePast = document.getElementById('filter-past').checked;
+      const today = new Date();
+      today.setHours(0,0,0,0);
       const filtered = events.filter(e => {
         if (term && !e.nome.toLowerCase().includes(term) && !e.summary.toLowerCase().includes(term)) return false;
         if (selectedTheme && !e.temas.includes(selectedTheme)) return false;
@@ -234,6 +241,7 @@
           if (e.preco==null||e.preco<min||e.preco>max) return false;
         }
         if (dateVal && formatMonthYear(e.data_inicio)!==dateVal) return false;
+        if (hidePast && parseStartDate(e.data_inicio) < today) return false;
         return true;
       });
       renderEvents(filtered);
@@ -251,7 +259,7 @@
       });
     }
 
-    ['search','filter-location','filter-price','filter-date'].forEach(id=>document.getElementById(id).addEventListener(id==='search'?'input':'change',applyFilters));
+    ['search','filter-location','filter-price','filter-date','filter-past'].forEach(id=>document.getElementById(id).addEventListener(id==='search'?'input':'change',applyFilters));
     fetchEvents();
   </script>
 </body>
