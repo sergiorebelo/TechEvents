@@ -43,9 +43,6 @@
     .site-title { font-size: 1.5em; font-weight: bold; }
     .mode-toggle { background: none; border: 1px solid var(--border); padding: 6px 12px; border-radius: 4px; color: var(--text); cursor: pointer; }
     .container { max-width: 900px; margin: auto; }
-    .main { display: flex; gap: 16px; align-items: flex-start; }
-    .sidebar { flex: 0 0 200px; }
-    .events { flex: 1; }
     .cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; background: var(--cloud-bg); padding: 8px; border-radius: 8px; }
     .cloud span {
       cursor: pointer;
@@ -79,6 +76,7 @@
     <button class="mode-toggle" id="toggle-mode">Dark Mode</button>
   </div>
   <div class="container">
+    <div class="cloud" id="theme-cloud"></div>
     <div class="filters">
       <input type="text" class="search-bar" id="search" placeholder="Search events" />
       <select id="filter-location"><option value="">Location</option></select>
@@ -91,12 +89,7 @@
         <input type="checkbox" id="filter-past" checked /> Hide past events
       </label>
     </div>
-    <div class="main">
-      <aside class="sidebar">
-        <div class="cloud" id="theme-cloud"></div>
-      </aside>
-      <div id="events-list" class="events"></div>
-    </div>
+    <div id="events-list"></div>
   </div>
 
   <footer>
