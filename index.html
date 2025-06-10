@@ -99,6 +99,17 @@
         width: 100%;
         grid-column: 1 / -1;
     }
+
+    @media (min-width: 768px) {
+      .search-bar {
+        grid-column: span 2;
+      }
+      #filter-price {
+        width: 160px;
+      }
+      #price-label, #noprice-label { white-space: nowrap; }
+      #noprice-label { margin-left: auto; }
+    }
     .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 8px var(--card-shadow); margin-bottom: 16px; }
     .card-content { padding: 16px; }
     .card-content h3 { font-size: 1.2em; margin-bottom: 8px; }
@@ -131,9 +142,9 @@
         <span style="font-size:0.9em;">FREE</span>
         <input type="range" id="filter-price" />
         <span id="price-label">ANY</span>
-        <label style="display:flex;align-items:center;gap:4px;font-size:0.9em;">
-          <input type="checkbox" id="filter-noprice" /> Hide events without price
-        </label>
+          <label id="noprice-label" style="display:flex;align-items:center;gap:4px;font-size:0.9em;">
+            <input type="checkbox" id="filter-noprice" /> Hide events without price
+          </label>
       </div>
     </div>
     <div id="events-list"></div>
