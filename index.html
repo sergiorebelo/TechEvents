@@ -128,7 +128,7 @@
       <div class="price-row">
         <span style="font-size:0.9em;">FREE</span>
         <input type="range" id="filter-price" />
-        <span id="price-label">Any price</span>
+        <span id="price-label">ANY</span>
       </div>
     </div>
     <div id="events-list"></div>
@@ -283,11 +283,11 @@ function populateCloud() {
       const priceLabel = document.getElementById('price-label');
       const prices = events.map(e => e.preco).filter(p => p!=null).sort((a,b)=>a-b);
       if (prices.length) {
-        priceSel.min = prices[0];
+        priceSel.min = 0;
         priceSel.max = prices[prices.length-1];
         priceSel.step = 1;
         priceSel.value = priceSel.max;
-        priceLabel.textContent = 'Any price';
+        priceLabel.textContent = 'ANY';
       } else {
         priceSel.min = 0;
         priceSel.max = 0;
@@ -304,7 +304,13 @@ function populateCloud() {
       const maxPrice = parseFloat(priceInput.value);
       const priceMax = parseFloat(priceInput.max);
       const priceLabel = document.getElementById('price-label');
-      priceLabel.textContent = maxPrice >= priceMax ? 'Any price' : `≤ €${maxPrice}`;
+      if (maxPrice >= priceMax) {
+        priceLabel.textContent = 'ANY';
+      } else if (maxPrice === 0) {
+        priceLabel.textContent = 'FREE';
+      } else {
+        priceLabel.textContent = `≤ €${maxPrice}`;
+      }
       const dateVal = document.getElementById('filter-date').value;
       const hidePast = document.getElementById('filter-past').checked;
       const hideNoPrice = document.getElementById('filter-noprice').checked;
