@@ -363,7 +363,8 @@ function populateCloud() {
       list.forEach(e=>{
         const card=document.createElement('div'); card.className='card';
         const online = e.online ? ' • Online' : '';
-        card.innerHTML=`<div class="card-content"><h3>${e.nome}</h3><p class="meta">${e.pais}, ${e.cidade} • ${formatMonthYear(e.data_inicio)}${e.preco!=null?' • €'+e.preco:''}${online}</p><p>${e.summary}</p><div class="tags">${e.temas.map(t=>`<span class="tag">${t}</span>`).join('')}</div><a href="${e.link}" class="btn" target="_blank">View Event</a></div>`;
+        const priceText = e.preco!=null ? (e.preco===0 ? 'FREE' : '€'+e.preco) : '';
+        card.innerHTML=`<div class="card-content"><h3>${e.nome}</h3><p class="meta">${e.pais}, ${e.cidade} • ${formatMonthYear(e.data_inicio)}${priceText?' • '+priceText:''}${online}</p><p>${e.summary}</p><div class="tags">${e.temas.map(t=>`<span class="tag">${t}</span>`).join('')}</div><a href="${e.link}" class="btn" target="_blank">View Event</a></div>`;
         c.appendChild(card);
       });
     }
