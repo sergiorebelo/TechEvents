@@ -53,8 +53,18 @@
       transition: background 0.2s;
       display: inline-block;
     }
-    .cloud span:hover { background: var(--cloud-hover); }
-    .filters { display: flex; gap: 8px; margin-bottom: 24px; align-items: center; }
+      .cloud span:hover { background: var(--cloud-hover); }
+      .cloud-toggle {
+        background: none;
+        border: none;
+        color: var(--text);
+        cursor: pointer;
+        font-size: 0.9em;
+        text-decoration: underline;
+        margin: 4px 0 12px;
+        display: none;
+      }
+      .filters { display: flex; gap: 8px; margin-bottom: 24px; align-items: center; }
     .search-bar { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--input-bg); color: var(--text); }
     .filters select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 999px; background: var(--input-bg); color: var(--text); }
     .filters input[type=range] { width: 150px; }
@@ -76,8 +86,9 @@
     <button class="mode-toggle" id="toggle-mode">Dark Mode</button>
   </div>
   <div class="container">
-    <div class="cloud" id="theme-cloud"></div>
-    <div class="filters">
+      <div class="cloud" id="theme-cloud"></div>
+      <button id="toggle-cloud" class="cloud-toggle">See all</button>
+      <div class="filters">
       <input type="text" class="search-bar" id="search" placeholder="Search events" />
       <select id="filter-location"><option value="">Location</option></select>
       <label style="display:flex;align-items:center;gap:4px;font-size:0.9em;">
@@ -113,8 +124,10 @@
     // Data & filters
     const sheetId = '142KcWCCWPXomn5ujQqIRFdRACRalHIXAHql61MRirDM';
     const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=Sheet1`;
-    let events = [];
-    let selectedTheme = '';
+      let events = [];
+      let selectedTheme = '';
+      let showAllThemes = false;
+      const maxThemes = 20;
     
     function formatMonthYear(str) {
       // 1) Detecta e “desembrulha” Date(YYYY,MM,DD)
@@ -184,25 +197,35 @@
         });
     }
 
-    function populateCloud() {
-      const cloud = document.getElementById('theme-cloud');
-      cloud.innerHTML = '';
-      const counts = {};
-      events.forEach(e => e.temas.forEach(t => counts[t] = (counts[t]||0) + 1));
-      const themes = Object.keys(counts).sort((a,b) => a.localeCompare(b));
-      const maxCount = Math.max(...Object.values(counts));
-      themes.forEach(theme => {
-        const span = document.createElement('span');
-        const size = 12 + (counts[theme]/maxCount)*12; // 12px to 24px
-        span.style.fontSize = `${size}px`;
-        span.textContent = theme;
-        span.addEventListener('click', () => {
-          selectedTheme = selectedTheme === theme ? '' : theme;
-          applyFilters();
+      function populateCloud() {
+        const cloud = document.getElementById('theme-cloud');
+        cloud.innerHTML = '';
+        const counts = {};
+        events.forEach(e => e.temas.forEach(t => counts[t] = (counts[t] || 0) + 1));
+        let themes = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+        if (!showAllThemes) {
+          themes = themes.slice(0, maxThemes);
+        }
+        const maxCount = Math.max(...Object.values(counts));
+        themes.forEach(theme => {
+          const span = document.createElement('span');
+          const size = 12 + (counts[theme] / maxCount) * 12; // 12px to 24px
+          span.style.fontSize = `${size}px`;
+          span.textContent = theme;
+          span.addEventListener('click', () => {
+            selectedTheme = selectedTheme === theme ? '' : theme;
+            applyFilters();
+          });
+          cloud.appendChild(span);
         });
-        cloud.appendChild(span);
-      });
-    }
+        const toggleBtn = document.getElementById('toggle-cloud');
+        if (Object.keys(counts).length > maxThemes) {
+          toggleBtn.style.display = 'block';
+          toggleBtn.textContent = showAllThemes ? 'See less' : 'See all';
+        } else {
+          toggleBtn.style.display = 'none';
+        }
+      }
 
     function populateFilters() {
       // Location
@@ -284,9 +307,15 @@
       });
     }
 
-    ['search','filter-location','filter-date','filter-past'].forEach(id=>document.getElementById(id).addEventListener(id==='search'?'input':'change',applyFilters));
-    document.getElementById('filter-price').addEventListener('input', applyFilters);
-    fetchEvents();
+      ['search','filter-location','filter-date','filter-past'].forEach(id =>
+        document.getElementById(id).addEventListener(id==='search'?'input':'change', applyFilters)
+      );
+      document.getElementById('filter-price').addEventListener('input', applyFilters);
+      document.getElementById('toggle-cloud').addEventListener('click', () => {
+        showAllThemes = !showAllThemes;
+        populateCloud();
+      });
+      fetchEvents();
   </script>
 </body>
 </html>
