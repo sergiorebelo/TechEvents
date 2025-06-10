@@ -231,11 +231,12 @@
             nome: r.c[0]?.v || '',
             pais: r.c[1]?.v || '',
             cidade: r.c[2]?.v || '',
-            data_inicio: r.c[3]?.v || '',
-            summary: r.c[5]?.v || '',
-            link: r.c[7]?.v || '#',
-            temas: (r.c[8]?.v || '').split(/\s+/).map(t => t.replace(/^#/, '')).filter(t => t),
-            preco: r.c[9]?.v ? parseFloat(r.c[9].v) : null
+            online: /true/i.test(String(r.c[3]?.v)),
+            data_inicio: r.c[4]?.v || '',
+            summary: r.c[6]?.v || '',
+            link: r.c[8]?.v || '#',
+            temas: (r.c[9]?.v || '').split(/\s+/).map(t => t.replace(/^#/, '')).filter(t => t),
+            preco: r.c[10]?.v ? parseFloat(r.c[10].v) : null
           }));
           events.sort((a, b) => parseStartDate(a.data_inicio) - parseStartDate(b.data_inicio));
           populateFilters();
@@ -361,7 +362,8 @@ function populateCloud() {
       const c = document.getElementById('events-list'); c.innerHTML='';
       list.forEach(e=>{
         const card=document.createElement('div'); card.className='card';
-        card.innerHTML=`<div class="card-content"><h3>${e.nome}</h3><p class="meta">${e.pais}, ${e.cidade} • ${formatMonthYear(e.data_inicio)} • ${e.preco!=null?'€'+e.preco:'N/A'}</p><p>${e.summary}</p><div class="tags">${e.temas.map(t=>`<span class="tag">${t}</span>`).join('')}</div><a href="${e.link}" class="btn" target="_blank">View Event</a></div>`;
+        const online = e.online ? ' • Online' : '';
+        card.innerHTML=`<div class="card-content"><h3>${e.nome}</h3><p class="meta">${e.pais}, ${e.cidade} • ${formatMonthYear(e.data_inicio)} • ${e.preco!=null?'€'+e.preco:'N/A'}${online}</p><p>${e.summary}</p><div class="tags">${e.temas.map(t=>`<span class="tag">${t}</span>`).join('')}</div><a href="${e.link}" class="btn" target="_blank">View Event</a></div>`;
         c.appendChild(card);
       });
     }
