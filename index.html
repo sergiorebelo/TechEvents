@@ -43,7 +43,7 @@
     .site-title { font-size: 1.5em; font-weight: bold; }
     .mode-toggle { background: none; border: 1px solid var(--border); padding: 6px 12px; border-radius: 4px; color: var(--text); cursor: pointer; }
     .container { max-width: 900px; margin: auto; }
-    .cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; background: var(--cloud-bg); padding: 8px; border-radius: 8px; }
+    .cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; background: var(--cloud-bg); padding: 8px; border-radius: 8px;  align-items: center; }
     .cloud span {
       cursor: pointer;
       padding: 6px 12px;
@@ -61,18 +61,20 @@
       cursor: pointer;
       font-size: 0.9em;
       text-decoration: underline;
-      margin: 4px 0 12px;
-      display: none;
+      margin-left: auto;
+      align-self: flex-end;
+      display: block;
     }
     .filters {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 8px;
       margin-bottom: 24px;
       align-items: center;
-      flex-wrap: wrap;
     }
     .search-bar {
-      flex: 1;
+      grid-column: 1/ -1;
+      width: 100%;
       padding: 8px 12px;
       border: 1px solid var(--border);
       border-radius: 8px;
@@ -91,10 +93,11 @@
     }
     .filters label { display: flex; align-items: center; gap: 4px; }
     .price-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        grid-column: 1 / -1;
     }
     .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 8px var(--card-shadow); margin-bottom: 16px; }
     .card-content { padding: 16px; }
@@ -113,8 +116,9 @@
     <button class="mode-toggle" id="toggle-mode">Dark Mode</button>
   </div>
   <div class="container">
-    <div class="cloud" id="theme-cloud"></div>
-    <button id="toggle-cloud" class="cloud-toggle">See all</button>
+    <div class="cloud" id="theme-cloud">
+      <button id="toggle-cloud" class="cloud-toggle">See all ▼</button>
+    </div>
     <div class="filters">
       <input type="text" class="search-bar" id="search" placeholder="Search events" />
       <select id="filter-location"><option value="">Location</option></select>
@@ -122,13 +126,14 @@
       <label style="display:flex;align-items:center;gap:4px;font-size:0.9em;">
         <input type="checkbox" id="filter-past" checked /> Hide past events
       </label>
-      <label style="display:flex;align-items:center;gap:4px;font-size:0.9em;">
-        <input type="checkbox" id="filter-noprice" /> Hide events without price
-      </label>
       <div class="price-row">
+        <label for="filter-price" style="font-size:0.9em;">Price</label>
         <span style="font-size:0.9em;">FREE</span>
         <input type="range" id="filter-price" />
         <span id="price-label">ANY</span>
+        <label style="display:flex;align-items:center;gap:4px;font-size:0.9em;">
+          <input type="checkbox" id="filter-noprice" /> Hide events without price
+        </label>
       </div>
     </div>
     <div id="events-list"></div>
@@ -230,8 +235,8 @@
 
 
 function populateCloud() {
-  const cloud = document.getElementById('theme-cloud');
-  cloud.innerHTML = '';
+  const cloud = document.getElementById("theme-cloud");
+  cloud.innerHTML = "";
   const counts = {};
   events.forEach(e => e.temas.forEach(t => counts[t] = (counts[t] || 0) + 1));
   let themes = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
@@ -240,22 +245,26 @@ function populateCloud() {
   }
   const maxCount = Math.max(...Object.values(counts));
   themes.forEach(theme => {
-    const span = document.createElement('span');
+    const span = document.createElement("span");
     const size = 12 + (counts[theme] / maxCount) * 12;
     span.style.fontSize = `${size}px`;
     span.textContent = theme;
-    span.addEventListener('click', () => {
-      selectedTheme = selectedTheme === theme ? '' : theme;
+    span.addEventListener("click", () => {
+      selectedTheme = selectedTheme === theme ? "" : theme;
       applyFilters();
     });
     cloud.appendChild(span);
   });
-  const toggleBtn = document.getElementById('toggle-cloud');
   if (Object.keys(counts).length > maxThemes) {
-    toggleBtn.style.display = 'block';
-    toggleBtn.textContent = showAllThemes ? 'See less' : 'See all';
-  } else {
-    toggleBtn.style.display = 'none';
+    const btn = document.createElement("button");
+    btn.id = "toggle-cloud";
+    btn.className = "cloud-toggle";
+    btn.textContent = showAllThemes ? "See less ▲" : "See all ▼";
+    btn.addEventListener("click", () => {
+      showAllThemes = !showAllThemes;
+      populateCloud();
+    });
+    cloud.appendChild(btn);
   }
 }
     function populateFilters() {
@@ -349,10 +358,6 @@ function populateCloud() {
     ['search','filter-location','filter-date','filter-past','filter-noprice'].forEach(id=>
       document.getElementById(id).addEventListener(id==='search'?'input':'change',applyFilters));
     document.getElementById('filter-price').addEventListener('input', applyFilters);
-    document.getElementById("toggle-cloud").addEventListener("click", () => {
-      showAllThemes = !showAllThemes;
-      populateCloud();
-    });
     fetchEvents();
   </script>
 </body>
