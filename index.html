@@ -54,11 +54,38 @@
       display: inline-block;
     }
     .cloud span:hover { background: var(--cloud-hover); }
-    .filters { display: flex; gap: 8px; margin-bottom: 24px; align-items: center; }
-    .search-bar { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--input-bg); color: var(--text); }
-    .filters select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 999px; background: var(--input-bg); color: var(--text); }
-    .filters input[type=range] { width: 150px; }
+    .filters {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .search-bar {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--input-bg);
+      color: var(--text);
+    }
+    .filters select {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--input-bg);
+      color: var(--text);
+    }
+    #filter-price {
+      width: 100%;
+    }
     .filters label { display: flex; align-items: center; gap: 4px; }
+    .price-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
     .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 8px var(--card-shadow); margin-bottom: 16px; }
     .card-content { padding: 16px; }
     .card-content h3 { font-size: 1.2em; margin-bottom: 8px; }
@@ -80,14 +107,18 @@
     <div class="filters">
       <input type="text" class="search-bar" id="search" placeholder="Search events" />
       <select id="filter-location"><option value="">Location</option></select>
-      <label style="display:flex;align-items:center;gap:4px;font-size:0.9em;">
-        <span id="price-label">Price</span>
-        <input type="range" id="filter-price" />
-      </label>
       <select id="filter-date"><option value="">Date</option></select>
       <label style="display:flex;align-items:center;gap:4px;font-size:0.9em;">
         <input type="checkbox" id="filter-past" checked /> Hide past events
       </label>
+      <label style="display:flex;align-items:center;gap:4px;font-size:0.9em;">
+        <input type="checkbox" id="filter-noprice" /> Hide events without price
+      </label>
+      <div class="price-row">
+        <span style="font-size:0.9em;">FREE</span>
+        <input type="range" id="filter-price" />
+        <span id="price-label">ANY</span>
+      </div>
     </div>
     <div id="events-list"></div>
   </div>
@@ -229,11 +260,11 @@
       const priceLabel = document.getElementById('price-label');
       const prices = events.map(e => e.preco).filter(p => p!=null).sort((a,b)=>a-b);
       if (prices.length) {
-        priceSel.min = prices[0];
+        priceSel.min = 0;
         priceSel.max = prices[prices.length-1];
         priceSel.step = 1;
         priceSel.value = priceSel.max;
-        priceLabel.textContent = 'Any price';
+        priceLabel.textContent = 'ANY';
       } else {
         priceSel.min = 0;
         priceSel.max = 0;
@@ -250,9 +281,16 @@
       const maxPrice = parseFloat(priceInput.value);
       const priceMax = parseFloat(priceInput.max);
       const priceLabel = document.getElementById('price-label');
-      priceLabel.textContent = maxPrice >= priceMax ? 'Any price' : `≤ €${maxPrice}`;
+      if (maxPrice >= priceMax) {
+        priceLabel.textContent = 'ANY';
+      } else if (maxPrice === 0) {
+        priceLabel.textContent = 'FREE';
+      } else {
+        priceLabel.textContent = `≤ €${maxPrice}`;
+      }
       const dateVal = document.getElementById('filter-date').value;
       const hidePast = document.getElementById('filter-past').checked;
+      const hideNoPrice = document.getElementById('filter-noprice').checked;
       const today = new Date();
       today.setHours(0,0,0,0);
       const filtered = events.filter(e => {
@@ -265,6 +303,7 @@
         if (maxPrice < priceMax) {
           if (e.preco==null || e.preco>maxPrice) return false;
         }
+        if (hideNoPrice && e.preco==null) return false;
         if (dateVal && formatMonthYear(e.data_inicio)!==dateVal) return false;
         if (hidePast && parseStartDate(e.data_inicio) < today) return false;
         return true;
@@ -284,7 +323,8 @@
       });
     }
 
-    ['search','filter-location','filter-date','filter-past'].forEach(id=>document.getElementById(id).addEventListener(id==='search'?'input':'change',applyFilters));
+    ['search','filter-location','filter-date','filter-past','filter-noprice'].forEach(id=>
+      document.getElementById(id).addEventListener(id==='search'?'input':'change',applyFilters));
     document.getElementById('filter-price').addEventListener('input', applyFilters);
     fetchEvents();
   </script>
