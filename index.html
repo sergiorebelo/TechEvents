@@ -105,7 +105,7 @@
         grid-column: span 2;
       }
       #filter-price {
-        width: 160px;
+        width: 200px;
       }
       #price-label, #noprice-label { white-space: nowrap; }
       #noprice-label { margin-left: auto; }
@@ -345,7 +345,7 @@ function populateCloud() {
           if (city ? e.cidade !== city : e.pais !== c) return false;
         }
         if (maxPrice < priceMax) {
-          if (e.preco==null || e.preco>maxPrice) return false;
+          if (e.preco==null || (e.preco>maxPrice && e.preco!==0)) return false;
         }
         if (hideNoPrice && e.preco==null) return false;
         if (dateVal && formatMonthYear(e.data_inicio)!==dateVal) return false;
@@ -363,7 +363,7 @@ function populateCloud() {
       list.forEach(e=>{
         const card=document.createElement('div'); card.className='card';
         const online = e.online ? ' • Online' : '';
-        card.innerHTML=`<div class="card-content"><h3>${e.nome}</h3><p class="meta">${e.pais}, ${e.cidade} • ${formatMonthYear(e.data_inicio)} • ${e.preco!=null?'€'+e.preco:'N/A'}${online}</p><p>${e.summary}</p><div class="tags">${e.temas.map(t=>`<span class="tag">${t}</span>`).join('')}</div><a href="${e.link}" class="btn" target="_blank">View Event</a></div>`;
+        card.innerHTML=`<div class="card-content"><h3>${e.nome}</h3><p class="meta">${e.pais}, ${e.cidade} • ${formatMonthYear(e.data_inicio)}${e.preco!=null?' • €'+e.preco:''}${online}</p><p>${e.summary}</p><div class="tags">${e.temas.map(t=>`<span class="tag">${t}</span>`).join('')}</div><a href="${e.link}" class="btn" target="_blank">View Event</a></div>`;
         c.appendChild(card);
       });
     }
