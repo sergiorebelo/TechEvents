@@ -46,6 +46,8 @@
     </div>
   </div>
   <div class="container">
+    <h1>Submit a Tech Event</h1>
+    <p>Fill out the form below to add your event to TechEvents. The link should point to the official event website and, if the event has multiple ticket tiers, please provide the regular attendance price.</p>
     <form id="event-form">
       <label>Event Name
         <input type="text" name="nome" required />
@@ -63,16 +65,17 @@
         <input type="date" name="data_inicio" required />
       </label>
       <label>Description
-        <textarea name="summary" rows="4"></textarea>
+        <textarea name="summary" rows="4" required></textarea>
       </label>
-      <label>Link
-        <input type="url" name="link" />
+      <label>Link (official website)
+        <input type="url" name="link" required />
       </label>
       <label>Tags (space separated)
         <input type="text" name="temas" />
       </label>
+      <div id="tag-suggestions" style="margin-bottom:12px;font-size:0.85em;"></div>
       <label>Price (EUR)
-        <input type="number" name="preco" step="0.01" />
+        <input type="number" name="preco" step="0.01" required />
       </label>
       <button class="submit" type="submit">Submit Event</button>
     </form>
@@ -92,13 +95,35 @@
     });
 
     const form = document.getElementById('event-form');
+    const nameInput = form.querySelector('input[name="nome"]');
+    const descInput = form.querySelector('textarea[name="summary"]');
+    const tagsInput = form.querySelector('input[name="temas"]');
+    const suggestionsDiv = document.getElementById('tag-suggestions');
+
+    function updateSuggestions() {
+      const text = `${nameInput.value} ${descInput.value}`.toLowerCase();
+      const words = text.match(/\b[a-z]{4,}\b/g);
+      if (!words) { suggestionsDiv.textContent = ''; return; }
+      const uniq = [...new Set(words)].slice(0,5);
+      suggestionsDiv.innerHTML = uniq.map(w => `<span style="cursor:pointer;margin-right:6px;">#${w}</span>`).join(' ');
+      suggestionsDiv.querySelectorAll('span').forEach(span => {
+        span.onclick = () => {
+          const tag = span.textContent;
+          tagsInput.value = tagsInput.value ? `${tagsInput.value} ${tag}` : tag;
+        };
+      });
+    }
+
+    nameInput.addEventListener('input', updateSuggestions);
+    descInput.addEventListener('input', updateSuggestions);
+
     const submitUrl = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec';
     form.addEventListener('submit', e => {
       e.preventDefault();
       const data = new FormData(form);
-      data.append('sheet', 'Sheet2');
+      data.append('sheet', 'Sheet1');
       fetch(submitUrl, { method: 'POST', body: data, mode: 'no-cors' })
-        .then(() => { alert('Event submitted!'); form.reset(); })
+        .then(() => { form.reset(); location.href = 'index.html'; })
         .catch(() => alert('There was an error submitting the event.'));
     });
   </script>
