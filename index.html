@@ -119,6 +119,19 @@
     .card-content .tag { background: var(--tag-bg); color: var(--tag-text); border-radius: 4px; padding: 2px 6px; font-size: 0.75em; }
     .btn { display: inline-block; padding: 8px 16px; background: #3366ff; color: #fff; text-decoration: none; border-radius: 6px; font-size: 0.9em; }
     footer { text-align: center; margin-top: 40px; font-size: 0.9em; }
+    #consent-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      color: var(--text);
+      padding: 12px;
+      text-align: center;
+      box-shadow: 0 -2px 8px var(--card-shadow);
+      z-index: 1000;
+    }
+    #consent-banner button { margin-left: 12px; }
   </style>
 </head>
 <body>
@@ -156,6 +169,11 @@
   <footer>
     Thought, designed and built by <a href="https://www.linkedin.com/in/sergiorebelo/" target="_blank">Sérgio Rebelo</a> with a little help from ai.
   </footer>
+
+  <div id="consent-banner">
+    This site uses cookies for analytics.
+    <button id="accept-consent">Accept</button>
+  </div>
 
   <script>
     // Dark mode toggle
@@ -376,6 +394,20 @@ function populateCloud() {
       document.getElementById(id).addEventListener(id==='search'?'input':'change',applyFilters));
     document.getElementById('filter-price').addEventListener('input', applyFilters);
     fetchEvents();
+    initConsentBanner();
+
+    function initConsentBanner() {
+      const banner = document.getElementById('consent-banner');
+      const accept = document.getElementById('accept-consent');
+      if (localStorage.getItem('analyticsConsent') === 'accepted') {
+        banner.style.display = 'none';
+        return;
+      }
+      accept.addEventListener('click', () => {
+        localStorage.setItem('analyticsConsent', 'accepted');
+        banner.remove();
+      });
+    }
   </script>
 </body>
 </html>

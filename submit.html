@@ -35,6 +35,19 @@
     input[type="text"], input[type="url"], input[type="number"], input[type="date"], textarea { width:100%; padding:8px; border:1px solid var(--border); border-radius:4px; background:var(--card-bg); color:var(--text); }
     textarea { resize:vertical; }
     button.submit { margin-top:12px; padding:8px 16px; background:#3366ff; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+    #consent-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      color: var(--text);
+      padding: 12px;
+      text-align: center;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+      z-index: 1000;
+    }
+    #consent-banner button { margin-left: 12px; }
   </style>
 </head>
 <body>
@@ -77,8 +90,13 @@
       <label>Price (EUR)
         <input type="number" name="preco" step="0.01" required />
       </label>
-      <button class="submit" type="submit">Submit Event</button>
-    </form>
+    <button class="submit" type="submit">Submit Event</button>
+  </form>
+</div>
+
+  <div id="consent-banner">
+    This site uses cookies for analytics.
+    <button id="accept-consent">Accept</button>
   </div>
   <script>
     const body = document.body;
@@ -126,6 +144,21 @@
         .then(() => { form.reset(); location.href = 'index.html'; })
         .catch(() => alert('There was an error submitting the event.'));
     });
+
+    initConsentBanner();
+
+    function initConsentBanner() {
+      const banner = document.getElementById('consent-banner');
+      const accept = document.getElementById('accept-consent');
+      if (localStorage.getItem('analyticsConsent') === 'accepted') {
+        banner.style.display = 'none';
+        return;
+      }
+      accept.addEventListener('click', () => {
+        localStorage.setItem('analyticsConsent', 'accepted');
+        banner.remove();
+      });
+    }
   </script>
 </body>
 </html>
