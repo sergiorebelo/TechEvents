@@ -44,6 +44,19 @@
     }
     .site-title { font-size: 1.5em; font-weight: bold; }
     .mode-toggle { background: none; border: 1px solid var(--border); padding: 6px 12px; border-radius: 4px; color: var(--text); cursor: pointer; }
+    #add-event {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #3366ff;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 999px;
+      text-decoration: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-weight: bold;
+      z-index: 1001;
+    }
     .container { max-width: 900px; margin: auto; }
     #map { height: 400px; margin-bottom: 16px; }
     .cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; background: var(--cloud-bg); padding: 8px; border-radius: 8px;  align-items: center; }
@@ -151,7 +164,6 @@
   <div class="header">
     <div class="site-title">TechEvents</div>
     <div>
-      <a href="submit.html" class="mode-toggle">Add Event</a>
       <button class="mode-toggle" id="toggle-mode">Dark Mode</button>
     </div>
   </div>
@@ -177,8 +189,11 @@
       </div>
     </div>
     <div id="map"></div>
+
     <div id="events-list"></div>
   </div>
+
+  <a href="submit.html" id="add-event">Add Event</a>
 
   <footer>
     Thought, designed and built by <a href="https://www.linkedin.com/in/sergiorebelo/" target="_blank">Sérgio Rebelo</a> with a little help from ai.
