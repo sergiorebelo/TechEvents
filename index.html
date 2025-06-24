@@ -46,7 +46,46 @@
     <div id="events-list"></div>
   </div>
 
-  <a href="submit.html" id="add-event">Add Event</a>
+  <a href="#" id="add-event">Add Event</a>
+
+  <div id="submit-overlay" class="hidden">
+    <div class="overlay-content">
+      <button id="close-overlay" class="close-button">&times;</button>
+      <h1>Submit a Tech Event</h1>
+      <p>Fill out the form below to add your event to TechEvents. The link should point to the official event website and, if the event has multiple ticket tiers, please provide the regular attendance price.</p>
+      <form id="event-form">
+        <label>Event Name
+          <input type="text" name="nome" required />
+        </label>
+        <label>Country
+          <input type="text" name="pais" required />
+        </label>
+        <label>City
+          <input type="text" name="cidade" required />
+        </label>
+        <label>
+          <input type="checkbox" name="online" value="true" /> Online event
+        </label>
+        <label>Start Date
+          <input type="date" name="data_inicio" required />
+        </label>
+        <label>Description
+          <textarea name="summary" rows="4" required></textarea>
+        </label>
+        <label>Link (official website)
+          <input type="url" name="link" required />
+        </label>
+        <label>Tags (space separated)
+          <input type="text" name="temas" />
+        </label>
+        <div id="tag-suggestions" style="margin-bottom:12px;font-size:0.85em;"></div>
+        <label>Price (EUR)
+          <input type="number" name="preco" step="0.01" required />
+        </label>
+      <button class="submit" type="submit">Submit Event</button>
+    </form>
+    </div>
+  </div>
 
   <footer>
     Thought, designed and built by <a href="https://www.linkedin.com/in/sergiorebelo/" target="_blank">Sérgio Rebelo</a> with a little help from ai.
