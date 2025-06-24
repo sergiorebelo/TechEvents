@@ -229,6 +229,9 @@ function renderEvents(list) {
       overlay.classList.add('hidden');
       document.body.style.overflow = '';
     };
+    // ensure hidden on load in case markup lacks the class
+    if (overlay) hideModal();
+
 
     if (addEventLink && overlay && closeOverlay) {
       addEventLink.addEventListener('click', e => {
@@ -240,6 +243,13 @@ function renderEvents(list) {
       closeOverlay.addEventListener('click', hideModal);
       overlay.addEventListener('click', e => {
         if (e.target === overlay) hideModal();
+
+      });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
+          hideModal();
+        }
+
       });
     }
 
