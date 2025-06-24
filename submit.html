@@ -4,52 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Submit Event - TechEvents</title>
-  <style>
-    :root {
-      --bg: #f7f8fa;
-      --text: #333;
-      --card-bg: #fff;
-      --border: #ccc;
-    }
-    .dark-mode {
-      --bg: #181a1b;
-      --text: #e4e6eb;
-      --card-bg: #242526;
-      --border: #555;
-    }
-    * { box-sizing: border-box; margin:0; padding:0; }
-    body { font-family: Arial, sans-serif; background: var(--bg); color: var(--text); padding:20px; transition: background 0.3s, color 0.3s; }
-    .header {
-      display:flex;
-      justify-content: space-between;
-      align-items:center;
-      margin-bottom:24px;
-      max-width:900px;
-      margin-left:auto;
-      margin-right:auto;
-    }
-    .mode-toggle { background:none; border:1px solid var(--border); padding:6px 12px; border-radius:4px; color:var(--text); cursor:pointer; text-decoration:none; }
-    .container { max-width:900px; margin:auto; }
-    form { background:var(--card-bg); padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
-    label { display:block; margin-bottom:12px; font-size:0.9em; }
-    input[type="text"], input[type="url"], input[type="number"], input[type="date"], textarea { width:100%; padding:8px; border:1px solid var(--border); border-radius:4px; background:var(--card-bg); color:var(--text); }
-    textarea { resize:vertical; }
-    button.submit { margin-top:12px; padding:8px 16px; background:#3366ff; color:#fff; border:none; border-radius:6px; cursor:pointer; }
-    #consent-banner {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--card-bg);
-      color: var(--text);
-      padding: 12px;
-      text-align: center;
-      box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
-      z-index: 1000;
-    }
-    #consent-banner button { margin-left: 12px; }
-
-  </style>
+  <link rel="stylesheet" href="assets/css/submit.css">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YD0H9YSQ8L"></script>
   <script>
@@ -108,67 +63,6 @@
     This site uses cookies for analytics.
     <button id="accept-consent">Accept</button>
   </div>
-  <script>
-    const body = document.body;
-    const toggle = document.getElementById('toggle-mode');
-    const savedMode = localStorage.getItem('mode');
-    if (savedMode === 'dark') {
-      body.classList.add('dark-mode');
-    }
-    toggle.textContent = body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
-    toggle.addEventListener('click', () => {
-      body.classList.toggle('dark-mode');
-      localStorage.setItem('mode', body.classList.contains('dark-mode') ? 'dark' : 'light');
-      toggle.textContent = body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
-    });
-
-    const form = document.getElementById('event-form');
-    const nameInput = form.querySelector('input[name="nome"]');
-    const descInput = form.querySelector('textarea[name="summary"]');
-    const tagsInput = form.querySelector('input[name="temas"]');
-    const suggestionsDiv = document.getElementById('tag-suggestions');
-
-    function updateSuggestions() {
-      const text = `${nameInput.value} ${descInput.value}`.toLowerCase();
-      const words = text.match(/\b[a-z]{4,}\b/g);
-      if (!words) { suggestionsDiv.textContent = ''; return; }
-      const uniq = [...new Set(words)].slice(0,5);
-      suggestionsDiv.innerHTML = uniq.map(w => `<span style="cursor:pointer;margin-right:6px;">#${w}</span>`).join(' ');
-      suggestionsDiv.querySelectorAll('span').forEach(span => {
-        span.onclick = () => {
-          const tag = span.textContent;
-          tagsInput.value = tagsInput.value ? `${tagsInput.value} ${tag}` : tag;
-        };
-      });
-    }
-
-    nameInput.addEventListener('input', updateSuggestions);
-    descInput.addEventListener('input', updateSuggestions);
-
-    const submitUrl = 'https://script.google.com/macros/s/AKfycbzPEdZylvlL0-aWGVy29VxgCgKl-ZHLJTgZfb06uNUxKn6G7fy-F_kMqS4nUiaYrhFz/exec';
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const data = new FormData(form);
-      data.append('sheet', 'Sheet1');
-      fetch(submitUrl, { method: 'POST', body: data, mode: 'no-cors' })
-        .then(() => { form.reset(); location.href = 'index.html'; })
-        .catch(() => alert('There was an error submitting the event.'));
-    });
-
-    initConsentBanner();
-
-    function initConsentBanner() {
-      const banner = document.getElementById('consent-banner');
-      const accept = document.getElementById('accept-consent');
-      if (localStorage.getItem('analyticsConsent') === 'accepted') {
-        banner.style.display = 'none';
-        return;
-      }
-      accept.addEventListener('click', () => {
-        localStorage.setItem('analyticsConsent', 'accepted');
-        banner.remove();
-      });
-    }
-  </script>
+  <script src="assets/js/submit.js"></script>
 </body>
 </html>
