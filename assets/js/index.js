@@ -225,6 +225,7 @@ function renderEvents(list) {
     const overlay = document.getElementById('submit-overlay');
     const closeOverlay = document.getElementById('close-overlay');
     if (addEventLink && overlay && closeOverlay) {
+      const hideOverlay = () => overlay.classList.add('hidden');
       addEventLink.addEventListener('click', e => {
         e.preventDefault();
         overlay.classList.remove('hidden');
@@ -237,6 +238,8 @@ function renderEvents(list) {
       closeOverlay.addEventListener('click', hideModal);
       overlay.addEventListener('click', e => {
         if (e.target === overlay) hideModal();
+
+
       });
     }
 
