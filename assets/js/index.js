@@ -228,8 +228,16 @@ function renderEvents(list) {
       addEventLink.addEventListener('click', e => {
         e.preventDefault();
         overlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
       });
-      closeOverlay.addEventListener('click', () => overlay.classList.add('hidden'));
+      const hideModal = () => {
+        overlay.classList.add('hidden');
+        document.body.style.overflow = '';
+      };
+      closeOverlay.addEventListener('click', hideModal);
+      overlay.addEventListener('click', e => {
+        if (e.target === overlay) hideModal();
+      });
     }
 
     if (overlay) {
