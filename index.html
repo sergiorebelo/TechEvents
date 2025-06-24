@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TechEvents</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     :root {
       --bg: #f7f8fa;
@@ -45,7 +43,6 @@
     .site-title { font-size: 1.5em; font-weight: bold; }
     .mode-toggle { background: none; border: 1px solid var(--border); padding: 6px 12px; border-radius: 4px; color: var(--text); cursor: pointer; }
     .container { max-width: 900px; margin: auto; }
-    #map { height: 400px; margin-bottom: 16px; }
     .cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; background: var(--cloud-bg); padding: 8px; border-radius: 8px;  align-items: center; }
     .cloud span {
       cursor: pointer;
@@ -176,7 +173,6 @@
           </label>
       </div>
     </div>
-    <div id="map"></div>
     <div id="events-list"></div>
   </div>
 
@@ -209,13 +205,6 @@
     let events = [];
     let selectedTheme = '';
 
-    let map = L.map('map').setView([0,0],2);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-    let markersLayer = L.layerGroup().addTo(map);
-    let geoCache = JSON.parse(localStorage.getItem('geoCache') || '{}');
 
     let showAllThemes = false;
     const maxThemes = 20;
@@ -396,7 +385,6 @@ function populateCloud() {
         return true;
       });
       renderEvents(filtered);
-      showMarkers(filtered);
       document.querySelectorAll('#theme-cloud span').forEach(span=>{
         span.style.opacity = selectedTheme && span.textContent!==selectedTheme?'0.3':'1';
       });
@@ -413,39 +401,6 @@ function renderEvents(list) {
   });
 }
 
-async function geocode(loc) {
-  if (geoCache[loc]) return geoCache[loc];
-  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(loc)}&limit=1`;
-  try {
-    const res = await fetch(url, {headers:{'Accept-Language':'en'}});
-    const data = await res.json();
-    if (data && data[0]) {
-      const {lat, lon} = data[0];
-      geoCache[loc] = [parseFloat(lat), parseFloat(lon)];
-      localStorage.setItem('geoCache', JSON.stringify(geoCache));
-      return geoCache[loc];
-    }
-  } catch (e) {}
-  return null;
-}
-
-async function showMarkers(list) {
-  markersLayer.clearLayers();
-  const coords = [];
-  for (const e of list) {
-    const loc = `${e.cidade}, ${e.pais}`;
-    const pos = await geocode(loc);
-    if (pos) {
-      const m = L.marker(pos).addTo(markersLayer);
-      m.bindPopup(`<strong>${e.nome}</strong><br>${loc}`);
-      coords.push(pos);
-    }
-  }
-  if (coords.length) {
-    const group = L.featureGroup(markersLayer.getLayers());
-    map.fitBounds(group.getBounds().pad(0.2));
-  }
-}
 
     ['search','filter-location','filter-date','filter-past','filter-noprice'].forEach(id=>
       document.getElementById(id).addEventListener(id==='search'?'input':'change',applyFilters));
