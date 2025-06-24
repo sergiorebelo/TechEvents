@@ -227,6 +227,7 @@ function renderEvents(list) {
 
     const hideModal = () => {
       overlay.classList.add('hidden');
+      overlay.style.display = 'none';
       document.body.style.overflow = '';
     };
     // ensure hidden on load in case markup lacks the class
@@ -237,6 +238,7 @@ function renderEvents(list) {
       addEventLink.addEventListener('click', e => {
         e.preventDefault();
         overlay.classList.remove('hidden');
+        overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
       });
 
