@@ -231,16 +231,15 @@ function renderEvents(list) {
         overlay.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
       });
-      closeOverlay.addEventListener('click', () => {
+      const hideModal = () => {
         overlay.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-      });
+        document.body.style.overflow = '';
+      };
+      closeOverlay.addEventListener('click', hideModal);
+      overlay.addEventListener('click', e => {
+        if (e.target === overlay) hideModal();
 
-      closeOverlay.addEventListener('click', hideOverlay);
-      document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
-          hideOverlay();
-        }
+
       });
     }
 
