@@ -224,22 +224,29 @@ function renderEvents(list) {
     const addEventLink = document.getElementById('add-event');
     const overlay = document.getElementById('submit-overlay');
     const closeOverlay = document.getElementById('close-overlay');
+
+    const hideModal = () => {
+      overlay.classList.add('hidden');
+      document.body.style.overflow = '';
+    };
+    // ensure hidden on load in case markup lacks the class
+    if (overlay) hideModal();
+
     if (addEventLink && overlay && closeOverlay) {
-      const hideOverlay = () => overlay.classList.add('hidden');
       addEventLink.addEventListener('click', e => {
         e.preventDefault();
         overlay.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
       });
-      const hideModal = () => {
-        overlay.classList.add('hidden');
-        document.body.style.overflow = '';
-      };
+
       closeOverlay.addEventListener('click', hideModal);
       overlay.addEventListener('click', e => {
         if (e.target === overlay) hideModal();
-
-
+      });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
+          hideModal();
+        }
       });
     }
 
@@ -273,7 +280,7 @@ function renderEvents(list) {
         const data = new FormData(form);
         data.append('sheet', 'Sheet1');
         fetch(submitUrl, { method: 'POST', body: data, mode: 'no-cors' })
-          .then(() => { form.reset(); overlay.classList.add('hidden'); })
+          .then(() => { form.reset(); hideModal(); })
           .catch(() => alert('There was an error submitting the event.'));
       });
     }
