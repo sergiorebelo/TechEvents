@@ -137,5 +137,64 @@
       box-shadow: 0 -2px 8px var(--card-shadow);
       z-index: 1000;
     }
-    #consent-banner button { margin-left: 12px; }
+  #consent-banner button { margin-left: 12px; }
+
+  /* Overlay for submit event */
+  #submit-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+  }
+  #submit-overlay .overlay-content {
+    background: var(--card-bg);
+    color: var(--text);
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+  }
+  #submit-overlay .close-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    color: var(--text);
+    cursor: pointer;
+  }
+  #submit-overlay label { display:block; margin-bottom:12px; font-size:0.9em; }
+  #submit-overlay input[type="text"],
+  #submit-overlay input[type="url"],
+  #submit-overlay input[type="number"],
+  #submit-overlay input[type="date"],
+  #submit-overlay textarea {
+    width:100%;
+    padding:8px;
+    border:1px solid var(--border);
+    border-radius:4px;
+    background:var(--card-bg);
+    color:var(--text);
+  }
+  #submit-overlay textarea { resize:vertical; }
+  #submit-overlay button.submit {
+    margin-top:12px;
+    padding:8px 16px;
+    background:#3366ff;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  .hidden { display:none; }
 
