@@ -225,6 +225,7 @@ function renderEvents(list) {
     const overlay = document.getElementById('submit-overlay');
     const closeOverlay = document.getElementById('close-overlay');
     if (addEventLink && overlay && closeOverlay) {
+      const hideOverlay = () => overlay.classList.add('hidden');
       addEventLink.addEventListener('click', e => {
         e.preventDefault();
         overlay.classList.remove('hidden');
@@ -233,6 +234,13 @@ function renderEvents(list) {
       closeOverlay.addEventListener('click', () => {
         overlay.classList.add('hidden');
         document.body.style.overflow = 'auto';
+      });
+
+      closeOverlay.addEventListener('click', hideOverlay);
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
+          hideOverlay();
+        }
       });
     }
 
