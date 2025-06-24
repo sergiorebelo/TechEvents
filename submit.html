@@ -6,19 +6,19 @@
   <title>Submit Event - TechEvents</title>
   <style>
     :root {
-      --bg: #8cc4ff;
-      --text: #111;
-      --card-bg: #ffeb3b;
-      --border: #000;
+      --bg: #f7f8fa;
+      --text: #333;
+      --card-bg: #fff;
+      --border: #ccc;
     }
     .dark-mode {
-      --bg: #0b2b3c;
-      --text: #fff;
-      --card-bg: #223a4b;
-      --border: #fff;
+      --bg: #181a1b;
+      --text: #e4e6eb;
+      --card-bg: #242526;
+      --border: #555;
     }
     * { box-sizing: border-box; margin:0; padding:0; }
-    body { font-family: 'Comic Sans MS', 'Comic Neue', sans-serif; background: var(--bg); color: var(--text); padding:20px; transition: background 0.3s, color 0.3s; }
+    body { font-family: Arial, sans-serif; background: var(--bg); color: var(--text); padding:20px; transition: background 0.3s, color 0.3s; }
     .header {
       display:flex;
       justify-content: space-between;
@@ -28,13 +28,13 @@
       margin-left:auto;
       margin-right:auto;
     }
-    .mode-toggle { background:var(--tag-bg,#ff6666); border:4px solid var(--border); padding:6px 12px; border-radius:4px; color:var(--text); cursor:pointer; text-decoration:none; }
+    .mode-toggle { background:none; border:1px solid var(--border); padding:6px 12px; border-radius:4px; color:var(--text); cursor:pointer; text-decoration:none; }
     .container { max-width:900px; margin:auto; }
-    form { background:var(--card-bg); padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); border:4px solid var(--border); }
+    form { background:var(--card-bg); padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
     label { display:block; margin-bottom:12px; font-size:0.9em; }
-    input[type="text"], input[type="url"], input[type="number"], input[type="date"], textarea { width:100%; padding:8px; border:4px solid var(--border); border-radius:4px; background:var(--card-bg); color:var(--text); }
+    input[type="text"], input[type="url"], input[type="number"], input[type="date"], textarea { width:100%; padding:8px; border:1px solid var(--border); border-radius:4px; background:var(--card-bg); color:var(--text); }
     textarea { resize:vertical; }
-    button.submit { margin-top:12px; padding:8px 16px; background:#3366ff; color:#fff; border:4px solid var(--border); border-radius:6px; cursor:pointer; }
+    button.submit { margin-top:12px; padding:8px 16px; background:#3366ff; color:#fff; border:none; border-radius:6px; cursor:pointer; }
     #consent-banner {
       position: fixed;
       bottom: 0;
@@ -49,24 +49,6 @@
     }
     #consent-banner button { margin-left: 12px; }
 
-    body::before, body::after { content:''; position:fixed; left:0; right:0; z-index:-3; }
-    body::before { top:0; bottom:0; background: var(--bg); }
-    body::after { bottom:0; height:120px; background:#fff; border-top:4px solid var(--border); }
-    .mountains {
-      position: fixed;
-      bottom: 120px;
-      left: 0;
-      right: 0;
-      height: 180px;
-      background: #73b244;
-      clip-path: polygon(0 100%, 10% 60%, 20% 90%, 35% 40%, 50% 90%, 65% 50%, 80% 85%, 90% 40%, 100% 80%, 100% 100%);
-      border-top: 4px solid var(--border);
-      z-index: -2;
-    }
-    .avatars { display:flex; gap:12px; justify-content:center; margin-bottom:20px; }
-    .avatars img { width:80px; height:80px; border-radius:50%; border:4px solid var(--border); box-shadow:0 4px 4px rgba(0,0,0,0.2); background:#fff; }
-    .speech-bubble { position: relative; background:#fff; border:4px solid var(--border); border-radius:12px; padding:8px 12px; margin:12px 0; }
-    .speech-bubble::after { content:''; position:absolute; left:20px; bottom:-16px; border:10px solid transparent; border-top-color:#fff; }
   </style>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YD0H9YSQ8L"></script>
@@ -86,13 +68,6 @@
       <button class="mode-toggle" id="toggle-mode">Dark Mode</button>
     </div>
   </div>
-  <div class="mountains"></div>
-  <div class="avatars">
-    <img src="avatar1.png" alt="Avatar 1">
-    <img src="avatar2.png" alt="Avatar 2">
-    <img src="avatar3.png" alt="Avatar 3">
-  </div>
-  <div class="speech-bubble">Submit your South Park style event!</div>
   <div class="container">
     <h1>Submit a Tech Event</h1>
     <p>Fill out the form below to add your event to TechEvents. The link should point to the official event website and, if the event has multiple ticket tiers, please provide the regular attendance price.</p>
