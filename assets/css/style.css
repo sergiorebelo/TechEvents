@@ -1,0 +1,141 @@
+    :root {
+      --bg: #f7f8fa;
+      --text: #333;
+      --card-bg: #fff;
+      --card-shadow: rgba(0,0,0,0.05);
+      --input-bg: #fff;
+      --border: #ccc;
+      --tag-bg: #eef;
+      --tag-text: #336;
+      --cloud-bg: #fff;
+      --cloud-hover: #ddd;
+    }
+    .dark-mode {
+      --bg: #181a1b;
+      --text: #e4e6eb;
+      --card-bg: #242526;
+      --card-shadow: rgba(0,0,0,0.5);
+      --input-bg: #3a3b3c;
+      --border: #555;
+      --tag-bg: #3a3b3c;
+      --tag-text: #d2d3d5;
+      --cloud-bg: #333;
+      --cloud-hover: #444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Arial', sans-serif; background: var(--bg); color: var(--text); padding: 20px; transition: background 0.3s, color 0.3s; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .site-title { font-size: 1.5em; font-weight: bold; }
+    .mode-toggle { background: none; border: 1px solid var(--border); padding: 6px 12px; border-radius: 4px; color: var(--text); cursor: pointer; }
+    #add-event {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #3366ff;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 999px;
+      text-decoration: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-weight: bold;
+      z-index: 1001;
+    }
+    .container { max-width: 900px; margin: auto; }
+    .cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; background: var(--cloud-bg); padding: 8px; border-radius: 8px;  align-items: center; }
+    .cloud span {
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      transition: background 0.2s;
+      display: inline-block;
+    }
+    .cloud span:hover { background: var(--cloud-hover); }
+    .cloud-toggle {
+      background: none;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.9em;
+      text-decoration: underline;
+      margin-left: auto;
+      align-self: flex-end;
+      display: block;
+    }
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 8px;
+      margin-bottom: 24px;
+      align-items: center;
+    }
+    .search-bar {
+      grid-column: 1/ -1;
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--input-bg);
+      color: var(--text);
+    }
+    .filters select {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--input-bg);
+      color: var(--text);
+    }
+    #filter-price {
+      width: 100%;
+    }
+    .filters label { display: flex; align-items: center; gap: 4px; }
+    .price-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        grid-column: 1 / -1;
+    }
+
+    @media (min-width: 768px) {
+      .search-bar {
+        grid-column: span 2;
+      }
+      #filter-price {
+        width: 200px;
+      }
+      #price-label, #noprice-label { white-space: nowrap; }
+      #noprice-label { margin-left: auto; }
+    }
+    .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 8px var(--card-shadow); margin-bottom: 16px; }
+    .card-content { padding: 16px; }
+    .card-content h3 { font-size: 1.2em; margin-bottom: 8px; }
+    .card-content p { font-size: 0.9em; line-height: 1.4; margin-bottom: 12px; color: var(--text); }
+    .card-content .meta { font-size: 0.8em; color: var(--text); opacity: 0.8; margin-bottom: 12px; }
+    .card-content .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .card-content .tag { background: var(--tag-bg); color: var(--tag-text); border-radius: 4px; padding: 2px 6px; font-size: 0.75em; }
+    .btn { display: inline-block; padding: 8px 16px; background: #3366ff; color: #fff; text-decoration: none; border-radius: 6px; font-size: 0.9em; }
+    footer { text-align: center; margin-top: 40px; font-size: 0.9em; }
+    #consent-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      color: var(--text);
+      padding: 12px;
+      text-align: center;
+      box-shadow: 0 -2px 8px var(--card-shadow);
+      z-index: 1000;
+    }
+    #consent-banner button { margin-left: 12px; }
+
