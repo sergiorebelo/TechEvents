@@ -229,7 +229,13 @@ function renderEvents(list) {
       addEventLink.addEventListener('click', e => {
         e.preventDefault();
         overlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
       });
+      closeOverlay.addEventListener('click', () => {
+        overlay.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+      });
+
       closeOverlay.addEventListener('click', hideOverlay);
       document.addEventListener('keydown', e => {
         if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
