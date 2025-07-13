@@ -127,18 +127,34 @@ function populateCloud() {
       // Location
       const loc = document.getElementById('filter-location');
       loc.innerHTML = '<option value="">Location</option>';
-      [...new Set(events.map(e => e.pais))].sort((a, b) => a.localeCompare(b)).forEach(country => {
-        const group = document.createElement('optgroup'); group.label = country;
-        const cities = [...new Set(events.filter(e => e.pais === country).map(e => e.cidade))]
+
+      const countries = [...new Set(events.filter(e => !e.online).map(e => e.pais))]
+        .sort((a, b) => a.localeCompare(b));
+
+      countries.forEach(country => {
+        const group = document.createElement('optgroup');
+        group.label = country;
+        const cities = [...new Set(events.filter(e => !e.online && e.pais === country).map(e => e.cidade))]
           .sort((a, b) => a.localeCompare(b));
-        const optAll = document.createElement('option'); optAll.value = `${country}||`; optAll.textContent = `All ${country}`;
+        const optAll = document.createElement('option');
+        optAll.value = `${country}||`;
+        optAll.textContent = `All ${country}`;
         group.appendChild(optAll);
         cities.forEach(city => {
-          const opt = document.createElement('option'); opt.value = `${country}||${city}`; opt.textContent = city;
+          const opt = document.createElement('option');
+          opt.value = `${country}||${city}`;
+          opt.textContent = city;
           group.appendChild(opt);
         });
         loc.appendChild(group);
       });
+
+      if (events.some(e => e.online)) {
+        const opt = document.createElement('option');
+        opt.value = 'ONLINE';
+        opt.textContent = 'Online';
+        loc.appendChild(opt);
+      }
       // Date
       const dateSel = document.getElementById('filter-date');
       dateSel.innerHTML = '<option value="">Date</option>' +
@@ -185,8 +201,12 @@ function populateCloud() {
         if (term && !e.nome.toLowerCase().includes(term) && !e.summary.toLowerCase().includes(term)) return false;
         if (selectedTheme && !e.temas.includes(selectedTheme)) return false;
         if (locVal) {
-          const [c, city] = locVal.split('||');
-          if (city ? e.cidade !== city : e.pais !== c) return false;
+          if (locVal === 'ONLINE') {
+            if (!e.online) return false;
+          } else {
+            const [c, city] = locVal.split('||');
+            if (city ? e.cidade !== city : e.pais !== c) return false;
+          }
         }
         if (maxPrice < priceMax) {
           if (e.preco==null || (e.preco>maxPrice && e.preco!==0)) return false;
@@ -206,9 +226,9 @@ function renderEvents(list) {
   const c = document.getElementById('events-list'); c.innerHTML='';
   list.forEach(e=>{
         const card=document.createElement('div'); card.className='card';
-        const online = e.online ? ' • Online' : '';
         const priceText = e.preco!=null ? (e.preco===0 ? 'FREE' : '€'+e.preco) : '';
-        card.innerHTML=`<div class="card-content"><h3>${e.nome}</h3><p class="meta">${e.pais}, ${e.cidade} • ${formatMonthYear(e.data_inicio)}${priceText?' • '+priceText:''}${online}</p><p>${e.summary}</p><div class="tags">${e.temas.map(t=>`<span class="tag">${t}</span>`).join('')}</div><a href="${e.link}" class="btn" target="_blank">View Event</a></div>`;
+        const locationText = e.online ? 'Online' : `${e.pais}, ${e.cidade}`;
+        card.innerHTML=`<div class="card-content"><h3>${e.nome}</h3><p class="meta">${locationText} • ${formatMonthYear(e.data_inicio)}${priceText?' • '+priceText:''}</p><p>${e.summary}</p><div class="tags">${e.temas.map(t=>`<span class="tag">${t}</span>`).join('')}</div><a href="${e.link}" class="btn" target="_blank">View Event</a></div>`;
         c.appendChild(card);
   });
 }
